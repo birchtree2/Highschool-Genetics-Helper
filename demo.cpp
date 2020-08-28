@@ -85,6 +85,24 @@ void analyze(std::vector<std::string> vec){
 	std::cout<<"\n"; 
 	 
 }
+std::vector<std::string> breed(std::vector<std::string> vec,int type){
+	vector<std::string>ans;
+	vector<std::string>tmp;
+	if(type==1){//自交 
+		for(auto s : vec){
+			tmp=cross(s,s);
+			for(auto t : tmp) ans.push_back(t);
+		}  
+	}else if(type==2){//自由交配 
+		for(auto p : vec){
+			 for(auto q : vec){
+			 	tmp=cross(p,q);
+			 	for(auto t : tmp) ans.push_back(t); 
+			 }
+		} 
+	}
+	return ans;
+} 
 int main(){
 	std::string s1,s2;
 	while(std::cin>>s1>>s2){
