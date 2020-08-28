@@ -86,8 +86,8 @@ void analyze(std::vector<std::string> vec){
 	 
 }
 std::vector<std::string> breed(std::vector<std::string> vec,int type){
-	vector<std::string>ans;
-	vector<std::string>tmp;
+	std::vector<std::string>ans;
+	std::vector<std::string>tmp;
 	if(type==1){//×Ô½» 
 		for(auto s : vec){
 			tmp=cross(s,s);
@@ -105,8 +105,13 @@ std::vector<std::string> breed(std::vector<std::string> vec,int type){
 } 
 int main(){
 	std::string s1,s2;
+	std::vector<std::string>in,out;
 	while(std::cin>>s1>>s2){
-		analyze(cross(s1,s2));
+//		analyze(cross(s1,s2));
+		in.push_back(s1);
+		in.push_back(s2);
+		out=breed(in,1);
+		analyze(out);
 	} 
 }
 
