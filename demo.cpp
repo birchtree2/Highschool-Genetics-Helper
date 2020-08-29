@@ -35,7 +35,17 @@ std::string forma(std::string s){//按照基因的写法排序
 	});
 	return s;
 } 
-
+std::string phenotype(std::string s){
+	std::string ans="";
+	int gn=genome_cnt(s);
+	for(int i=0;i<(int)s.length();i+=gn){
+		bool is_recess=1;//是否表现为隐性 
+		for(int j=0;j<gn;j++) if(s[i+j]!=tolower(s[i])) is_recess=0;
+		if(is_recess) ans+=tolower(s[i]);
+		else ans+=toupper(s[i]);
+	}
+	return ans;
+} 
 struct Genepool{
   	std::map<std::string, Fraction> pr;//每种基因型的概率 
 	void print_ratio(std::map<std::string,Fraction> ma){
@@ -52,7 +62,7 @@ struct Genepool{
             lcmdown = lcm(lcmdown, down);
         }
 		for(auto it=ma.begin();it!=ma.end();it++){
-			std::cout<<it->second.getNumerator()*lcmdown;	
+			std::cout<<lcmdown/it->second.getDenominator()*it->second.getNumerator();
 			auto p=it;
 			p++;
 			if(p!=ma.end())std::cout<<":"; 
@@ -60,7 +70,9 @@ struct Genepool{
 	} 
 	void analyze(){
 		std::map<std::string,Fraction >pheno_pr;
-		for(auto s : pr) pheno_pr[s.first] += s.second;
+		for(auto s : pr){
+			pheno_pr[phenotype(s.first)] += s.second;
+		}
         std::cout<<"表现型比例\n ";
         print_ratio(pheno_pr);
         std::cout << "\n";
@@ -75,25 +87,17 @@ struct Genepool{
     Genepool ans;
     gfa=gametes(fa);
 	gmo=gametes(mo);
-	int sz = (int)gfa.size() * gmo.size();
+	int sz = (int)gfa.size() * (int)gmo.size();
 	for(std::string p : gfa){
 		for(std::string q : gmo){
-			 ans.pr[forma(p+q)]+=Fraction(1,sz);
+        	ans.pr[forma(p + q)] += Fraction(1, sz);
+//        	std::cout<<Fraction(1,sz)<<endl;
+//        	std::cout<<ans.pr[forma(p + q)]<<endl;
 		}
 	}
 	return ans;
 }
-std::string phenotype(std::string s){
-	std::string ans="";
-	int gn=genome_cnt(s);
-	for(int i=0;i<(int)s.length();i+=gn){
-		bool is_recess=1;//是否表现为隐性 
-		for(int j=0;j<gn;j++) if(s[i+j]!=tolower(s[i])) is_recess=0;
-		if(is_recess) ans+=tolower(s[i]);
-		else ans+=toupper(s[i]);
-	}
-	return ans;
-} 
+
 
 Genepool breed(Genepool orig,int type){
 	Genepool ans;
@@ -111,16 +115,16 @@ Genepool breed(Genepool orig,int type){
 			 	tmp=cross(p.first,q.first);
 			 	for(auto t : tmp.pr){
                     ans.pr[t.first] += t.second * p.second * q.second;
-                    }
+                }
 			 }
 		} 
 	}
 	return ans;
 } 
 int main(){
-	// Fraction a=Fraction(2,3),b=Fraction(3,4);
-	// a-=b;
-	// std::cout<<a;
+//	Fraction a=Fraction(0,0)+Fraction(1,4);
+//	a-=b;
+//	std::cout<<a;
 	std::string s1,s2;
 	std::vector<std::string>in,out;
 	while(std::cin>>s1>>s2){

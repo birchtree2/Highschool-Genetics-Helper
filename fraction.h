@@ -103,7 +103,7 @@ std::istream& operator>>(std::istream &in, Fraction &Fraction);
 */
 Fraction::Fraction(void) {
 	this->numerator = 0;
-	this->denominator = 0;
+	this->denominator = 1;//initially the value is zero
 }
 
 /**
