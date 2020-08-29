@@ -46,30 +46,27 @@ struct Genepool{
 			if(p==ma.end()) std::cout<<"=";
 			else std::cout<<":"; 
 		} 
-		int g=ma.begin()->second.getDenominator();
+		int lcmdown=ma.begin()->second.getDenominator();//通分分母
 		for(auto it=(++ma.begin());it!=ma.end();it++){
-			int down=ma.begin()->second.getDenominator
-		}
+            int down = ma.begin()->second.getDenominator();
+            lcmdown = lcm(lcmdown, down);
+        }
 		for(auto it=ma.begin();it!=ma.end();it++){
-			std::cout<<it->second/g;	
+			std::cout<<it->second.getNumerator()*lcmdown;	
 			auto p=it;
 			p++;
 			if(p!=ma.end())std::cout<<":"; 
 		} 
 	} 
-	void analyze(std::vector<std::string> vec){
-		std::map<std::string,int>gene_num;
-		std::map<std::string,int>pheno_num;
-		for(std::string s : vec){
-			gene_num[s]++; 
-			pheno_num[phenotype(s)]++;
-		} 
-		std::cout<<"表现型比例:\n";
-		print_ratio(pheno_num);
-		std::cout<<"\n";
-		std::cout<<"基因型比例:\n";
-		print_ratio(gene_num);
-		std::cout<<"\n"; 
+	void analyze(){
+		std::map<std::string,Fraction >pheno_pr;
+		for(auto s : pr) pheno_pr[s.first] += s.second;
+        std::cout<<"表现型比例\n ";
+        print_ratio(pheno_pr);
+        std::cout << "\n";
+        std::cout << "基因型比例:\n";
+        print_ratio(pr);
+        std::cout << "\n"; 
 		
 	}
 };
@@ -127,7 +124,7 @@ int main(){
 	std::string s1,s2;
 	std::vector<std::string>in,out;
 	while(std::cin>>s1>>s2){
-		cross(s1,s2);
+		cross(s1,s2).analyze();
 //		in.push_back(s1);
 //		in.push_back(s2);
 //		out=breed(in,1);
