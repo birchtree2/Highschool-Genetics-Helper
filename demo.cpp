@@ -87,12 +87,15 @@ struct Genepool {
 		std::cout << "\n";
 
 	}
+	void clear(){
+		pr.clear();
+	}
 };
 Genepool cross(std::string fa,std::string mo) {
 	std::vector<std::string>gfa,gmo,ans;
 	gfa=gametes(fa);
 	gmo=gametes(mo);
-	int sz = (int)gfa.size() * (int)gmo.size();
+	// int sz = (int)gfa.size() * (int)gmo.size();
 	for(std::string p : gfa) {
 		for(std::string q : gmo) {
 			ans.push_back(forma(p+q));
@@ -102,25 +105,29 @@ Genepool cross(std::string fa,std::string mo) {
 }
 
 
-Genepool breed(Genepool orig,int type) {
+Genepool breed(Genepool parent,int generation,int type) {
 	Genepool ans;
 	Genepool tmp;
-	if(type==1) { //自交
-		for(auto s : orig.pr) {
-			tmp=cross(s.first,s.first);
-			for(auto t : tmp.pr) {
-				ans.pr[t.first] += t.second * s.second;
-			}
-		}
-	} else if(type==2) { //自由交配
-		for(auto p : orig.pr) {
-			for(auto q : orig.pr) {
-				tmp=cross(p.first,q.first);
+	for(int tim=1;tim<=generation;tim++){
+		ans.clear();
+		if(type==1) { //自交
+			for(auto s : parent.pr) {
+				tmp=cross(s.first,s.first);
 				for(auto t : tmp.pr) {
-					ans.pr[t.first] += t.second * p.second * q.second;
+					ans.pr[t.first] += t.second * s.second;
+				}
+			}
+		} else if(type==2) { //自由交配
+			for(auto p : parent.pr) {
+				for(auto q : parent.pr) {
+					tmp=cross(p.first,q.first);
+					for(auto t : tmp.pr) {
+						ans.pr[t.first] += t.second * p.second * q.second;
+					}
 				}
 			}
 		}
+		parent=ans;
 	}
 	return ans;
 }
@@ -130,10 +137,13 @@ int main() {
 //	std::cout<<a;
 	std::string s1,s2;
 	std::vector<std::string>in,out;
-	while(std::cin>>s1>>s2) {
-		cross(s1,s2).analyze();
-//		in.push_back(s1);
-//		in.push_back(s2);
+	Genepool ans;
+	while(std::cin>>s1) {
+// cross(s1,s2).analyze();
+		in.push_back(s1);
+		ans=Genepool(in);
+		ans=breed(ans,2,1);
+		ans.analyze();
 //		out=breed(in,1);
 //		analyze(out);
 	}
