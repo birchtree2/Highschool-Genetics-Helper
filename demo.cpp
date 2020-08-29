@@ -4,6 +4,7 @@
 #include<algorithm>
 #include<cctype>
 #include<map> 
+#include<cmath>
 #include<vector>
 #include "fraction.h" 
 int genome_cnt(std::string s){//染色体组数 
@@ -35,15 +36,53 @@ std::string forma(std::string s){//按照基因的写法排序
 	return s;
 } 
 
-struct G{
-  std::map<std::string, Fraction> ma;
-}
- cross(std::string fa,std::string mo){
-	std::vector<std::string>gfa,gmo,ans;
-	gfa=gametes(fa);
+struct Genepool{
+  	std::map<std::string, Fraction> pr;//每种基因型的概率 
+	void print_ratio(std::map<std::string,Fraction> ma){
+		for(auto it=ma.begin();it!=ma.end();it++){
+			std::cout<<it->first;	
+			auto p=it;
+			p++;
+			if(p==ma.end()) std::cout<<"=";
+			else std::cout<<":"; 
+		} 
+		int g=ma.begin()->second.getDenominator();
+		for(auto it=(++ma.begin());it!=ma.end();it++){
+			int down=ma.begin()->second.getDenominator
+		}
+		for(auto it=ma.begin();it!=ma.end();it++){
+			std::cout<<it->second/g;	
+			auto p=it;
+			p++;
+			if(p!=ma.end())std::cout<<":"; 
+		} 
+	} 
+	void analyze(std::vector<std::string> vec){
+		std::map<std::string,int>gene_num;
+		std::map<std::string,int>pheno_num;
+		for(std::string s : vec){
+			gene_num[s]++; 
+			pheno_num[phenotype(s)]++;
+		} 
+		std::cout<<"表现型比例:\n";
+		print_ratio(pheno_num);
+		std::cout<<"\n";
+		std::cout<<"基因型比例:\n";
+		print_ratio(gene_num);
+		std::cout<<"\n"; 
+		
+	}
+};
+ Genepool cross(std::string fa,std::string mo){
+	std::vector<std::string>gfa,gmo;
+    Genepool ans;
+    gfa=gametes(fa);
 	gmo=gametes(mo);
+	int sz = (int)gfa.size() * gmo.size();
 	for(std::string p : gfa){
-		for(std::string q : gmo) ans.push_back(forma(p+q));
+		for(std::string q : gmo){
+			 ans.pr[forma(p+q)]+=Fraction(1,sz);
+		}
 	}
 	return ans;
 }
@@ -58,51 +97,24 @@ std::string phenotype(std::string s){
 	}
 	return ans;
 } 
-void print_ratio(std::map<std::string,int> ma){
-	for(auto it=ma.begin();it!=ma.end();it++){
-		std::cout<<it->first;	
-		auto p=it;
-		p++;
-		if(p==ma.end()) std::cout<<"=";
-		else std::cout<<":"; 
-	} 
- 	int g=ma.begin()->second;
- 	for(auto it=(++ma.begin());it!=ma.end();it++) g=std::__gcd(g,it->second);
-	for(auto it=ma.begin();it!=ma.end();it++){
-		std::cout<<it->second/g;	
-		auto p=it;
-		p++;
-		if(p!=ma.end())std::cout<<":"; 
-	} 
-} 
-void analyze(std::vector<std::string> vec){
-	std::map<std::string,int>gene_num;
-	std::map<std::string,int>pheno_num;
-	for(std::string s : vec){
-		gene_num[s]++; 
-		pheno_num[phenotype(s)]++;
-	} 
-	std::cout<<"表现型比例:\n";
-	print_ratio(pheno_num);
-	std::cout<<"\n";
-	std::cout<<"基因型比例:\n";
-	print_ratio(gene_num);
-	std::cout<<"\n"; 
-	 
-}
-std::vector<std::string> breed(std::vector<std::string> vec,int type){
-	std::vector<std::string>ans;
-	std::vector<std::string>tmp;
+
+Genepool breed(Genepool orig,int type){
+	Genepool ans;
+	Genepool tmp;
 	if(type==1){//自交 
-		for(auto s : vec){
-			tmp=cross(s,s);
-			for(auto t : tmp) ans.push_back(t);
-		}  
+		for(auto s : orig.pr){
+			tmp=cross(s.first,s.first);
+            for(auto t : tmp.pr){
+				ans.pr[t.first] += t.second * s.second;
+			}
+        }  
 	}else if(type==2){//自由交配 
-		for(auto p : vec){
-			 for(auto q : vec){
-			 	tmp=cross(p,q);
-			 	for(auto t : tmp) ans.push_back(t); 
+		for(auto p : orig.pr){
+			 for(auto q : orig.pr){
+			 	tmp=cross(p.first,q.first);
+			 	for(auto t : tmp.pr){
+                    ans.pr[t.first] += t.second * p.second * q.second;
+                    }
 			 }
 		} 
 	}
@@ -115,7 +127,7 @@ int main(){
 	std::string s1,s2;
 	std::vector<std::string>in,out;
 	while(std::cin>>s1>>s2){
-		analyze(cross(s1,s2));
+		cross(s1,s2);
 //		in.push_back(s1);
 //		in.push_back(s2);
 //		out=breed(in,1);
