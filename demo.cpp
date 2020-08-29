@@ -4,7 +4,6 @@
 #include<algorithm>
 #include<cctype>
 #include<map>
-#include<cmath>
 #include<vector>
 #include "fraction.h"
 int genome_cnt(std::string s) { //染色体组数
@@ -48,6 +47,13 @@ std::string phenotype(std::string s) {
 }
 struct Genepool {
 	std::map<std::string, Fraction> pr;//每种基因型的概率
+	Genepool(){}
+	Genepool(std::string s){
+		pr[s]=1;
+	}
+	Genepool(std::vector<std::string> vec){
+		for(auto s : vec) pr[s]+=Fraction(1,vec.size());
+	}
 	void print_ratio(std::map<std::string,Fraction> ma) {
 		for(auto it=ma.begin(); it!=ma.end(); it++) {
 			std::cout<<it->first;
@@ -83,19 +89,16 @@ struct Genepool {
 	}
 };
 Genepool cross(std::string fa,std::string mo) {
-	std::vector<std::string>gfa,gmo;
-	Genepool ans;
+	std::vector<std::string>gfa,gmo,ans;
 	gfa=gametes(fa);
 	gmo=gametes(mo);
 	int sz = (int)gfa.size() * (int)gmo.size();
 	for(std::string p : gfa) {
 		for(std::string q : gmo) {
-			ans.pr[forma(p + q)] += Fraction(1, sz);
-//        	std::cout<<Fraction(1,sz)<<endl;
-//        	std::cout<<ans.pr[forma(p + q)]<<endl;
+			ans.push_back(forma(p+q));
 		}
 	}
-	return ans;
+	return Genepool(ans);
 }
 
 
