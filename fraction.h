@@ -375,9 +375,9 @@ Fraction Fraction::operator-=(Fraction fraction) {
 	} else {
 		this->numerator = (this->numerator * fraction.getDenominator()) - (fraction.getNumerator() * this->denominator);
 		this->denominator *= fraction.getDenominator();
-        this->reduce();
-        return *this;
 	}
+	this->reduce();
+    return *this;
 }
 
 /**

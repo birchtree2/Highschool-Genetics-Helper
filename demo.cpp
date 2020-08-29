@@ -9,7 +9,7 @@
 int genome_cnt(std::string s){//染色体组数 
 	for(int i=1;i<(int)s.length();i++) if(tolower(s[i])!=tolower(s[0])) return i;
 	return (int)s.length();
-}1
+}
 int gene_cnt(std::string s){//等位基因对数 
 	return (int)s.length()/genome_cnt(s);
 }
@@ -33,8 +33,12 @@ std::string forma(std::string s){//按照基因的写法排序
 		else return tolower(p)<tolower(q);
 	});
 	return s;
-}  
-std::vector<std::string> cross(std::string fa,std::string mo){
+} 
+
+struct G{
+  std::map<std::string, Fraction> ma;
+}
+ cross(std::string fa,std::string mo){
 	std::vector<std::string>gfa,gmo,ans;
 	gfa=gametes(fa);
 	gmo=gametes(mo);
@@ -105,18 +109,18 @@ std::vector<std::string> breed(std::vector<std::string> vec,int type){
 	return ans;
 } 
 int main(){
-	Fraction a=Fraction(2,3),b=Fraction(3,4);
-	a=a*b;
-	std::cout<<a;
-//	std::string s1,s2;
-//	std::vector<std::string>in,out;
-//	while(std::cin>>s1>>s2){
-////		analyze(cross(s1,s2));
+	// Fraction a=Fraction(2,3),b=Fraction(3,4);
+	// a-=b;
+	// std::cout<<a;
+	std::string s1,s2;
+	std::vector<std::string>in,out;
+	while(std::cin>>s1>>s2){
+		analyze(cross(s1,s2));
 //		in.push_back(s1);
 //		in.push_back(s2);
 //		out=breed(in,1);
 //		analyze(out);
-//	}
+	}
     system("pause");
 }
 
