@@ -25,6 +25,7 @@
 #ifndef _FRACTION_H
 
 #define _FRACTION_H 
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -330,7 +331,7 @@ Fraction Fraction::operator+(Fraction fraction) {
 		resultFraction.setNumerator((this->numerator * fraction.getDenominator()) + (fraction.getNumerator() * this->denominator));
 		resultFraction.setDenominator(this->denominator * fraction.getDenominator());
 	}
-
+	resultFraction.reduce();
 	return resultFraction;
 }
 
@@ -344,7 +345,7 @@ Fraction Fraction::operator+=(Fraction fraction) {
 		this->numerator = (this->numerator * fraction.getDenominator()) + (fraction.getNumerator() * this->denominator);
 		this->denominator *= fraction.getDenominator();
 	}
-
+	this->reduce();
 	return *this;
 }
 
@@ -361,7 +362,7 @@ Fraction Fraction::operator-(Fraction fraction) {
 		resultFraction.setNumerator((this->numerator * fraction.getDenominator()) - (fraction.getNumerator() * this->denominator));
 		resultFraction.setDenominator(this->denominator * fraction.getDenominator());
 	}
-
+	resultFraction.reduce();
 	return resultFraction;
 }
 
@@ -374,9 +375,9 @@ Fraction Fraction::operator-=(Fraction fraction) {
 	} else {
 		this->numerator = (this->numerator * fraction.getDenominator()) - (fraction.getNumerator() * this->denominator);
 		this->denominator *= fraction.getDenominator();
+        this->reduce();
+        return *this;
 	}
-
-	return *this;
 }
 
 /**
@@ -387,7 +388,7 @@ Fraction Fraction::operator*(Fraction fraction) {
 
 	resultFraction.setNumerator(this->numerator * fraction.getNumerator());
 	resultFraction.setDenominator(this->denominator * fraction.getDenominator());
-
+	resultFraction.reduce();
 	return resultFraction;
 }
 
@@ -396,9 +397,9 @@ Fraction Fraction::operator*(Fraction fraction) {
 */
 Fraction Fraction::operator*=(Fraction fraction) {
 	this->denominator *= fraction.getDenominator();
-	this->numerator *= fraction.getNumerator();
-
-	return *this;
+    this->numerator *= fraction.getNumerator();
+    this->reduce();
+    return *this;
 }
 
 /**
@@ -409,7 +410,7 @@ Fraction Fraction::operator/(Fraction fraction) {
 
 	resultFraction.setDenominator(this->denominator * fraction.getNumerator());
 	resultFraction.setNumerator(this->numerator * fraction.getDenominator());
-
+	resultFraction.reduce();
 	return resultFraction;
 }
 
@@ -418,9 +419,9 @@ Fraction Fraction::operator/(Fraction fraction) {
 */
 Fraction Fraction::operator/=(Fraction fraction) {
 	this->denominator *= fraction.getNumerator();
-	this->numerator *= fraction.getDenominator();
-
-	return *this;
+    this->numerator *= fraction.getDenominator();
+    this->reduce();
+    return *this;
 }
 
 /**
