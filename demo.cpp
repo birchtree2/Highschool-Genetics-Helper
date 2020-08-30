@@ -54,6 +54,19 @@ struct Genepool {
 	Genepool(std::vector<std::string> vec){
 		for(auto s : vec) pr[s]+=Fraction(1,vec.size());
 	}
+	Fraction frequency(char c){//某基因的频率 
+		Fraction ans=0;
+		for(auto it : pr){
+			std::string s=it.first;
+			int cnt=0;
+			for(int j=0;j<(int)s.length();j++) if(s[j]==c) cnt++;
+			ans+=it.second*Fraction(cnt,1);
+		}
+		return ans;
+	} 
+	Fraction frequency(std::string s){
+		return pr[s];
+	} 
 	void print_ratio(std::map<std::string,Fraction> ma) {
 		for(auto it=ma.begin(); it!=ma.end(); it++) {
 			std::cout<<it->first;
@@ -136,13 +149,14 @@ int main() {
 //	a-=b;
 //	std::cout<<a;
 	std::string s1,s2;
+	int gen; 
 	std::vector<std::string>in,out;
 	Genepool ans;
-	while(std::cin>>s1) {
+	while(std::cin>>s1>>gen) {
 // cross(s1,s2).analyze();
 		in.push_back(s1);
 		ans=Genepool(in);
-		ans=breed(ans,2,1);
+		ans=breed(ans,gen,2);
 		ans.analyze();
 //		out=breed(in,1);
 //		analyze(out);
